@@ -1,3 +1,5 @@
+package matrix;
+
 public class Matrix {
     private double[][] data;
 
@@ -37,6 +39,7 @@ public class Matrix {
         }
 
         double[][] values = new double[getRows()][getColumns()];
+
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
                 values[i][j] = data[i][j] + otherMatrix.data[i][j];
@@ -46,17 +49,43 @@ public class Matrix {
         return new Matrix(values);
     }
 
-    // public Matrix subtract(Matrix otherMatrix) {
-        
-    // }
+    public Matrix subtract(Matrix otherMatrix) {
+        return add(otherMatrix.scalarMultiply(-1));
+    }
 
-    // public Matrix scalarMultiply(double num) {
-        
-    // }
+    public Matrix scalarMultiply(double scalar) {
+        double[][] values = new double[getRows()][getColumns()];
 
-    // public Matrix multiply(Matrix otherMatrix) {
-        
-    // }
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                values[i][j] = data[i][j] * scalar;
+            }
+        }
+
+        return new Matrix(values);
+    }
+
+    public Matrix scalarDivide(double scalar) {
+        return scalarMultiply(1 / scalar);
+    }
+
+    public Matrix multiply(Matrix otherMatrix) {
+        if (getColumns() != otherMatrix.getRows()) {
+            throw new IllegalArgumentException(
+                "Number of columns of the first matrix must match number of rows of second matrix");
+        }
+
+        double[][] values = new double[getRows()][otherMatrix.getColumns()];
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < otherMatrix.getColumns(); j++) {
+                for (int k = 0; k < otherMatrix.getRows(); k++) {
+                    values[i][j] += otherMatrix.data[k][j] * data[i][k];
+                } 
+            }
+        }
+
+        return new Matrix(values);
+    }
 
     @Override
     public String toString() {
