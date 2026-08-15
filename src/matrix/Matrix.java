@@ -5,8 +5,8 @@ public class Matrix {
 
     public Matrix(double[][] data) {
 
-        if (getRows() > 1) {
-            for (int i = 1; i < getRows(); i++) {
+        if (data.length > 1) {
+            for (int i = 1; i < data.length; i++) {
                 if (data[i].length != data[i-1].length) {
                     throw new IllegalArgumentException("Matrix is not rectangular.");
                 }
