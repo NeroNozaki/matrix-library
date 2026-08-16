@@ -2,9 +2,9 @@ package matrix;
 
 public class Matrix {
     private double[][] data;
+    public boolean isSquare;
 
     public Matrix(double[][] data) {
-
         if (data.length > 1) {
             for (int i = 1; i < data.length; i++) {
                 if (data[i].length != data[i-1].length) {
@@ -13,7 +13,17 @@ public class Matrix {
             }
         }
 
-        this.data = data;
+        this.data = new double[data.length][data[0].length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                this.data[i][j] = data[i][j];
+            }
+        }
+
+    }
+
+    public Matrix(int rows, int columns) {
+        this.data = new double[rows][columns];
     }
 
 
@@ -87,6 +97,66 @@ public class Matrix {
         return new Matrix(values);
     }
 
+    public double determinant() {
+        if (!isSquare()) {
+            throw new IllegalStateException("Only square matrices can have determinants.");
+        }
+
+        double determinant = 0;
+
+        if (getRows() == 1) {
+            determinant = data[0][0];
+        } else if (getRows() == 2) {
+            determinant = (data[0][0] * data[1][1]) - (data[1][0] * data[0][1]);
+        } else {
+            for (int j = 0; j < getColumns(); j++) {
+                if (j % 2 == 0) {
+                    determinant += (makeMinor(0,j).determinant() * data[0][j]);
+                } else {
+                    determinant -= (makeMinor(0,j).determinant() * data[0][j]);
+                }
+            }
+        }
+        return determinant;
+    }
+
+    // -------------- Helper Functions --------------
+
+    private Matrix makeMinor(int removedRow, int removedColumn) {
+        Matrix minor = new Matrix(getRows()-1, getColumns()-1);
+        int minorRow = 0;
+        for (int i = 0; i < getRows(); i++) {
+            if (i == removedRow) {
+                continue;
+            }
+
+            int minorColumn = 0;
+
+            for (int j = 0; j < getColumns(); j++) {
+                if (j == removedColumn) {
+                    continue;
+                }
+
+                minor.data[minorRow][minorColumn] = data[i][j];
+                minorColumn++;
+            }
+            minorRow++;
+        }
+        return minor;
+    }
+
+    public int getRows() {
+        return data.length;
+    }
+
+    public int getColumns() {
+        return data[0].length;
+    }
+
+    private boolean isSquare() {
+        return getRows() == getColumns();
+    }
+
     @Override
     public String toString() {
         String matrix = "";
@@ -100,13 +170,4 @@ public class Matrix {
 
         return matrix;
     }
-
-    public int getRows() {
-        return data.length;
-    }
-
-    public int getColumns() {
-        return data[0].length;
-    }
-
 }
