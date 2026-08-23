@@ -14,6 +14,7 @@ public class LinearAlgebra {
 
         return B;
     }
+
     // --------------- sum -------------------
     public Matrix sum(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getColumns() != B.getColumns()) {
@@ -137,5 +138,73 @@ public class LinearAlgebra {
         }
         
         return dot(A, B);
+    }
+
+    // ------------- gauss ---------------
+    public void gauss(Matrix A) {
+        int pivotRow = 1;
+        int column = 1;
+        Matrix B = new Matrix(A);
+        int swapRow;
+        double pivot;
+        double factor;
+
+        int maxPivots = Math.min(B.getRows(), B.getColumns());
+        while (pivotRow <= maxPivots && column <= maxPivots) {
+            // System.out.println(B);
+            swapRow = findSwapRow(B, pivotRow, column);
+            // System.out.println("swap row = " + swapRow);
+            B = swapRows(B, swapRow, pivotRow);
+            pivot = B.get(pivotRow, column);
+            if (Math.abs(pivot) < 0.0000000000001) {
+                pivotRow++;
+                column++;
+                continue;
+            }
+
+            // System.out.println("pivot = " + pivot + "\n");
+
+            for (int i = pivotRow + 1; i <= B.getRows(); i++) {
+                factor = B.get(i, column) / pivot;
+                // System.out.println("factor = " + B.get(i,1) + " / " + pivot);
+                for (int j = column; j <= B.getColumns(); j++) {
+                    // System.out.println("\n" + B.get(i, j) + " -> " + B.get(i, j) + " - " + "(" + B.get(1, j) + " * " + factor + ") " + " = " + (B.get(i-1, j) * factor));
+                    B.set(i, j, B.get(i, j) - (B.get(pivotRow, j) * factor));
+                }
+            }
+
+            pivotRow++;
+            column++;
+        }
+
+        System.out.println(B);
+    }
+    
+    private int findSwapRow(Matrix A, int pivotRow, int column) {
+        int swapRow = pivotRow;
+        double max = A.get(pivotRow, column);
+        for (int i = pivotRow; i <= A.getRows(); i++) {
+            if (Math.abs(A.get(i, column)) > Math.abs(max)) {
+                max = A.get(i, column);
+                swapRow = i;
+            }
+        }
+        return swapRow;
+    }
+    
+    private Matrix swapRows(Matrix A, int swapRow, int targetRow) {
+        Matrix B = new Matrix(A.getRows(), A.getColumns());
+        for (int i = 1; i <= B.getRows(); i++) {
+            for (int j = 1; j <= B.getColumns(); j++) {
+                if (i == targetRow) {
+                    B.set(i, j, A.get(swapRow, j));
+                } else if (i == swapRow) {
+                    B.set(i, j, A.get(targetRow, j));
+                } else {
+                    B.set(i, j, A.get(i, j));
+                }
+            }
+        }
+        return B;
     }
 }

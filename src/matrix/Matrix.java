@@ -23,6 +23,14 @@ public class Matrix {
     public Matrix(int rows, int columns) {
         this.data = new double[rows][columns];
     }
+    public Matrix(Matrix matrix) {
+        this.data = new double[matrix.getRows()][matrix.getColumns()];
+        for (int i = 0; i < matrix.getRows(); i++) {
+            for (int j = 0; j < matrix.getColumns(); j++) {
+                this.data[i][j] = matrix.get(i+1, j+1);
+            }
+        }
+    }
 
     // ------------ GETTERS/SETTERS -------------
 
