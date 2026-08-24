@@ -141,7 +141,7 @@ public class LinearAlgebra {
     }
 
     // ------------- gauss ---------------
-    public void gauss(Matrix A) {
+    public Matrix gauss(Matrix A) {
         int pivotRow = 1;
         int column = 1;
         Matrix B = new Matrix(A);
@@ -151,10 +151,8 @@ public class LinearAlgebra {
 
         int maxPivots = Math.min(B.getRows(), B.getColumns());
         while (pivotRow <= maxPivots && column <= maxPivots) {
-            // System.out.println(B);
             swapRow = findSwapRow(B, pivotRow, column);
-            // System.out.println("swap row = " + swapRow);
-            B = swapRows(B, swapRow, pivotRow);
+            B = new Matrix(swapRows(B, swapRow, pivotRow));
             pivot = B.get(pivotRow, column);
             if (Math.abs(pivot) < 0.0000000000001) {
                 pivotRow++;
@@ -162,13 +160,10 @@ public class LinearAlgebra {
                 continue;
             }
 
-            // System.out.println("pivot = " + pivot + "\n");
 
             for (int i = pivotRow + 1; i <= B.getRows(); i++) {
                 factor = B.get(i, column) / pivot;
-                // System.out.println("factor = " + B.get(i,1) + " / " + pivot);
                 for (int j = column; j <= B.getColumns(); j++) {
-                    // System.out.println("\n" + B.get(i, j) + " -> " + B.get(i, j) + " - " + "(" + B.get(1, j) + " * " + factor + ") " + " = " + (B.get(i-1, j) * factor));
                     B.set(i, j, B.get(i, j) - (B.get(pivotRow, j) * factor));
                 }
             }
@@ -177,9 +172,8 @@ public class LinearAlgebra {
             column++;
         }
 
-        System.out.println(B);
+        return B;
     }
-    
     private int findSwapRow(Matrix A, int pivotRow, int column) {
         int swapRow = pivotRow;
         double max = A.get(pivotRow, column);
@@ -191,7 +185,6 @@ public class LinearAlgebra {
         }
         return swapRow;
     }
-    
     private Matrix swapRows(Matrix A, int swapRow, int targetRow) {
         Matrix B = new Matrix(A.getRows(), A.getColumns());
         for (int i = 1; i <= B.getRows(); i++) {
