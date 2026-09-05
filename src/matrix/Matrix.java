@@ -1,4 +1,5 @@
 package matrix;
+import java.text.DecimalFormat;
 
 public class Matrix {
     private double[][] data;
@@ -61,15 +62,41 @@ public class Matrix {
     // --------------- Override ---------------
     @Override
     public String toString() {
-        String matrix = "";
+        DecimalFormat format = new DecimalFormat("0.00");
 
+        String[][] formatted = new String[getRows()][getColumns()];
+        int[] widths = new int[getColumns()];
+
+        // Format all numbers and find the widest value in each column.
         for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < data[i].length; j++) {
-                matrix += data[i][j] + " ";
+            for (int j = 0; j < getColumns(); j++) {
+                double value = data[i][j];
+                if (value == 0.0) {
+                    value = 0.0;
+                }
+
+                formatted[i][j] = format.format(value);
+
+                if (formatted[i][j].length() > widths[j]) {
+                    widths[j] = formatted[i][j].length();
+                }
             }
-            matrix += "\n";
         }
 
-        return matrix;
+        StringBuilder matrix = new StringBuilder();
+
+        // Print each value using the width calculated for its column.
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                matrix.append(String.format("%" + widths[j] + "s", formatted[i][j]));
+
+                if (j < getColumns() - 1) {
+                    matrix.append("  ");
+                }
+            }
+            matrix.append("\n");
+        }
+
+        return matrix.toString();
     }
 }

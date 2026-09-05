@@ -45,6 +45,7 @@ public class LinearAlgebra {
     }
 
     // --------------- times -------------------
+    // scalar multiplication
     public Matrix times(double scalar, Matrix matrix) {
         double[][] values = new double[matrix.getRows()][matrix.getColumns()];
 
@@ -65,6 +66,7 @@ public class LinearAlgebra {
 
         return new Vector(values);
     }
+    // element by element multiplication
     public Matrix times(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getColumns() != B.getColumns()) {
             throw new InvalidParameterException("Matrices must have the same order.");
@@ -112,9 +114,6 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
-    public Vector dot(Vector a, Vector b) {
-        return times(a, b);
-    }
     public Matrix dot(Matrix A, Vector b) {
         if (A.getColumns() != b.dimension()) {
             throw new InvalidParameterException("Columns of matrix and dimension of vector don't match.");
@@ -127,7 +126,8 @@ public class LinearAlgebra {
         
         return dot(A, B);
     }
-    public Matrix dot(Vector a, Matrix B) {
+    // unnecessary but i'm keeping them here jic
+    private Matrix dot(Vector a, Matrix B) {
         if (a.dimension() != B.getRows()) {
             throw new InvalidParameterException("Dimension of vector and rows of matrix don't match.");
         }
@@ -139,6 +139,9 @@ public class LinearAlgebra {
         
         return dot(A, B);
     }
+    private Vector dot(Vector a, Vector b) {
+        return times(a, b);
+}
 
     // ------------- gauss ---------------
     public Matrix gauss(Matrix A) {
@@ -174,6 +177,7 @@ public class LinearAlgebra {
 
         return B;
     }
+    // helpers
     private int findSwapRow(Matrix A, int pivotRow, int column) {
         int swapRow = pivotRow;
         double max = A.get(pivotRow, column);
@@ -199,5 +203,110 @@ public class LinearAlgebra {
             }
         }
         return B;
+    }
+
+    // ------------ solve --------------
+    public void solve(Matrix matrix) {
+        Matrix A = gauss(matrix);
+
+        switch (checkPossibility(A)) {
+        case 0:
+            System.err.println("Linear system is impossible.\n");
+            break;
+        case 1:
+            System.err.println("Linear system is possible but indeterminate.\n");
+            break;
+        case 2:
+            actuallySolve(A);
+            break;
+        default:
+            System.err.println("What the fuck\n");
+            break;
+        }
+    }
+
+    private int findRank(Matrix matrix) {
+        int rank = 0;
+        for (int i = 1; i <= matrix.getRows(); i++) {
+            for (int j = 1; j <= matrix.getColumns(); j++) {
+                if (matrix.get(i, j) != 0) {
+                    rank++;
+                    break;
+                }
+            }
+        }
+        return rank;
+    }
+    private int checkPossibility(Matrix A) {
+        Matrix C = new Matrix(A.getRows(), A.getColumns()-1);
+        for (int i = 1; i <= C.getRows(); i++) {
+            for (int j = 1; j <= C.getColumns(); j++) {
+                C.set(i, j, A.get(i, j));
+            }
+        }
+
+        // system is impossible when ranks are different
+        if (findRank(A) != findRank(C)) {
+            return 0;
+        }
+        // system is possible indeterminate when nullity of coefient matrix is not 0
+        if (C.getColumns() - findRank(C) != 0) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+    private void actuallySolve(Matrix matrix) {
+        Matrix simpMatrix = simplifyPivots(matrix);
+
+        int pivotRow = simpMatrix.getRows();
+        int pivotColumn;
+        double pivot;
+        double factor;
+
+        while(pivotRow > 1) {
+            pivotColumn = findPivotColumn(simpMatrix, pivotRow);
+            pivot = findPivot(simpMatrix, pivotRow);
+
+            for(int i = pivotRow-1; i >= 1; i--) {
+                factor = simpMatrix.get(i, pivotColumn) / pivot;
+                for(int j = matrix.getColumns(); j >= 1; j--) {
+                    simpMatrix.set(i, j, simpMatrix.get(i, j) - (simpMatrix.get(pivotRow, j) * factor));
+                }
+            }
+            pivotRow--;
+        }
+
+        double[] solution = new double[simpMatrix.getColumns()-1];
+        for(int i = 1; i <= simpMatrix.getRows(); i++) {
+            solution[i-1] = simpMatrix.get(i, simpMatrix.getColumns());
+        }
+        System.out.println(new Vector(solution));
+    }
+    private double findPivot(Matrix matrix, int row) {
+        for(int j = 1; j <= matrix.getColumns(); j++) {
+            if (matrix.get(row, j) != 0) {
+                return matrix.get(row, j);
+            }
+        }
+        return 0;
+    }
+    private Matrix simplifyPivots(Matrix matrix) {
+        double pivot;
+        for (int i = 1; i <= matrix.getRows(); i++) {
+            pivot = findPivot(matrix, i);
+            for (int j = 1; j <= matrix.getColumns(); j++) {
+                matrix.set(i, j, matrix.get(i, j) / pivot);
+            }
+        }
+        return matrix;
+    }
+    private int findPivotColumn(Matrix matrix, int row) {
+        for(int j = 1; j <= matrix.getColumns(); j++) {
+            if (matrix.get(row, j) != 0) {
+                return j;
+            }
+        }
+        return 0;
     }
 }

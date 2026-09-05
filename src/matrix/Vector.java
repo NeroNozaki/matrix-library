@@ -3,10 +3,15 @@ package matrix;
 import java.security.InvalidParameterException;
 
 public class Vector {
-    private double[] data;
+    private Matrix data;
 
-    public Vector(double[] data) {
-        this.data = data;
+    public Vector(double[] elements) {
+        double[][] data = new double[elements.length][1]; 
+        for (int i = 0; i < elements.length; i++) {
+            data[i][0] = elements[i];
+        }
+
+        this.data = new Matrix(data);
     }
 
     // ------------------- GETTERS/SETTERS ------------------
@@ -14,27 +19,21 @@ public class Vector {
         if (index <= 0) {
             throw new InvalidParameterException("Index must be greater than 0.");
         }
-        return data[index-1];
+        return data.get(index, 1);
     }
     public void set(int index, double value) {
         if (index <= 0) {
             throw new InvalidParameterException("Index must be greater than 0.");
         }
-        this.data[index-1] = value;
+        data.set(index-1, 1, value);
     }
     public int dimension() {
-        return data.length;
+        return data.getRows();
     }
 
     // --------------- Override --------------
     @Override
     public String toString() {
-        String vector = "";
-
-        for (int i = 0; i < dimension(); i++) {
-            vector += data[i] + " ";
-        }
-
-        return vector += "\n";
+        return data.toString();
     }
 }
