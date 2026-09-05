@@ -2,7 +2,7 @@
 
 A simple Java library for working with matrices, vectors, and common linear algebra operations.
 
-[Português](#português)
+[Português](#portuguese)
 
 ---
 
