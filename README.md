@@ -449,7 +449,7 @@ The result is:
 
 ```text
  17.00  49.00
-47.00  123.00
+47.00  121.00
 ```
 
 The dimensions follow the usual matrix multiplication rule:
@@ -1103,7 +1103,7 @@ O resultado é:
 
 ```text
  17.00  49.00
-47.00  123.00
+47.00  121.00
 ```
 
 As dimensões seguem a regra usual da multiplicação matricial:

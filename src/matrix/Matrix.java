@@ -24,6 +24,22 @@ public class Matrix {
     public Matrix(int rows, int columns) {
         this.data = new double[rows][columns];
     }
+
+    public Matrix(int rows, int cols, double[] elements) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Rows and columns must be positive.");
+        }
+        if (elements == null || elements.length != rows * cols) {
+            throw new IllegalArgumentException("Number of elements must equal rows * cols.");
+        }
+
+        this.data = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.data[i][j] = elements[i * cols + j];
+            }
+        }
+    }
     public Matrix(Matrix matrix) {
         this.data = new double[matrix.getRows()][matrix.getColumns()];
         for (int i = 0; i < matrix.getRows(); i++) {
