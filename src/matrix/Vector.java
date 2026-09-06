@@ -6,7 +6,7 @@ public class Vector {
     private Matrix data;
 
     public Vector(double[] elements) {
-        double[][] data = new double[elements.length][1]; 
+        double[][] data = new double[elements.length][1];
         for (int i = 0; i < elements.length; i++) {
             data[i][0] = elements[i];
         }
@@ -25,7 +25,7 @@ public class Vector {
         if (index <= 0) {
             throw new InvalidParameterException("Index must be greater than 0.");
         }
-        data.set(index-1, 1, value);
+        data.set(index, 1, value);
     }
     public int dimension() {
         return data.getRows();

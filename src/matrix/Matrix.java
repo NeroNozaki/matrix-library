@@ -24,6 +24,7 @@ public class Matrix {
     public Matrix(int rows, int columns) {
         this.data = new double[rows][columns];
     }
+
     public Matrix(Matrix matrix) {
         this.data = new double[matrix.getRows()][matrix.getColumns()];
         for (int i = 0; i < matrix.getRows(); i++) {

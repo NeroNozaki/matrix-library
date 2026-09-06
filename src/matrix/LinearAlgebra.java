@@ -15,6 +15,14 @@ public class LinearAlgebra {
         return B;
     }
 
+    public Matrix transpose(Vector a) {
+        Matrix B = new Matrix(1, a.dimension());
+        for (int i = 1; i <= a.dimension(); i++) {
+            B.set(1, i, a.get(i));
+        }
+        return B;
+    }
+
     // --------------- sum -------------------
     public Matrix sum(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getColumns() != B.getColumns()) {
@@ -120,7 +128,7 @@ public class LinearAlgebra {
         }
 
         Matrix B = new Matrix(b.dimension(), 1);
-        for (int i = 1; i < b.dimension(); i++) {
+        for (int i = 1; i <= b.dimension(); i++) {
             B.set(i, 1, b.get(i));
         }
         
@@ -133,7 +141,7 @@ public class LinearAlgebra {
         }
 
         Matrix A = new Matrix(1, a.dimension());
-        for (int i = 1; i < a.dimension(); i++) {
+        for (int i = 1; i <= a.dimension(); i++) {
             A.set(1, i, a.get(i));
         }
         
@@ -152,13 +160,11 @@ public class LinearAlgebra {
         double pivot;
         double factor;
 
-        int maxPivots = Math.min(B.getRows(), B.getColumns());
-        while (pivotRow <= maxPivots && column <= maxPivots) {
+        while (pivotRow <= B.getRows() && column <= B.getColumns()) {
             swapRow = findSwapRow(B, pivotRow, column);
             B = new Matrix(swapRows(B, swapRow, pivotRow));
             pivot = B.get(pivotRow, column);
             if (Math.abs(pivot) < 0.0000000000001) {
-                pivotRow++;
                 column++;
                 continue;
             }
@@ -206,22 +212,21 @@ public class LinearAlgebra {
     }
 
     // ------------ solve --------------
-    public void solve(Matrix matrix) {
+    public Matrix solve(Matrix matrix) {
         Matrix A = gauss(matrix);
 
         switch (checkPossibility(A)) {
         case 0:
             System.err.println("Linear system is impossible.\n");
-            break;
+            return null;
         case 1:
             System.err.println("Linear system is possible but indeterminate.\n");
-            break;
+            return null;
         case 2:
-            actuallySolve(A);
-            break;
+            return actuallySolve(A);
         default:
             System.err.println("What the fuck\n");
-            break;
+            return null;
         }
     }
 
@@ -256,7 +261,7 @@ public class LinearAlgebra {
             return 2;
         }
     }
-    private void actuallySolve(Matrix matrix) {
+    private Matrix actuallySolve(Matrix matrix) {
         Matrix simpMatrix = simplifyPivots(matrix);
 
         int pivotRow = simpMatrix.getRows();
@@ -267,6 +272,10 @@ public class LinearAlgebra {
         while(pivotRow > 1) {
             pivotColumn = findPivotColumn(simpMatrix, pivotRow);
             pivot = findPivot(simpMatrix, pivotRow);
+            if (Math.abs(pivot) < 0.0000000000001) {
+                pivotRow--;
+                continue;
+            }
 
             for(int i = pivotRow-1; i >= 1; i--) {
                 factor = simpMatrix.get(i, pivotColumn) / pivot;
@@ -277,11 +286,19 @@ public class LinearAlgebra {
             pivotRow--;
         }
 
-        double[] solution = new double[simpMatrix.getColumns()-1];
-        for(int i = 1; i <= simpMatrix.getRows(); i++) {
+        int variables = simpMatrix.getColumns() - 1;
+        double[] solution = new double[variables];
+        for(int i = 1; i <= simpMatrix.getRows() && i <= variables; i++) {
             solution[i-1] = simpMatrix.get(i, simpMatrix.getColumns());
         }
-        System.out.println(new Vector(solution));
+        Vector result = new Vector(solution);
+        System.out.println(result);
+
+        Matrix solutionMatrix = new Matrix(variables, 1);
+        for (int i = 1; i <= variables; i++) {
+            solutionMatrix.set(i, 1, solution[i-1]);
+        }
+        return solutionMatrix;
     }
     private double findPivot(Matrix matrix, int row) {
         for(int j = 1; j <= matrix.getColumns(); j++) {
@@ -295,6 +312,9 @@ public class LinearAlgebra {
         double pivot;
         for (int i = 1; i <= matrix.getRows(); i++) {
             pivot = findPivot(matrix, i);
+            if (Math.abs(pivot) < 0.0000000000001) {
+                continue;
+            }
             for (int j = 1; j <= matrix.getColumns(); j++) {
                 matrix.set(i, j, matrix.get(i, j) / pivot);
             }
