@@ -6,19 +6,8 @@ public class Vector {
     private Matrix data;
 
     public Vector(double[] elements) {
-        this(elements.length, elements);
-    }
-
-    public Vector(int dim, double[] elements) {
-        if (dim <= 0) {
-            throw new InvalidParameterException("Dimension must be greater than 0.");
-        }
-        if (elements == null || elements.length != dim) {
-            throw new InvalidParameterException("Number of elements must equal the vector dimension.");
-        }
-
-        double[][] data = new double[dim][1];
-        for (int i = 0; i < dim; i++) {
+        double[][] data = new double[elements.length][1];
+        for (int i = 0; i < elements.length; i++) {
             data[i][0] = elements[i];
         }
 
