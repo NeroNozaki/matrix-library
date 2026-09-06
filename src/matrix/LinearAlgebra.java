@@ -289,11 +289,9 @@ public class LinearAlgebra {
         }
 
         int variables = simpMatrix.getColumns() - 1;
-        double[] solution = new double[variables];
-
         Matrix solutionMatrix = new Matrix(variables, 1);
-        for (int i = 1; i <= variables; i++) {
-            solutionMatrix.set(i, 1, solution[i-1]);
+        for (int i = 1; i <= variables && i <= simpMatrix.getRows(); i++) {
+            solutionMatrix.set(i, 1, simpMatrix.get(i, simpMatrix.getColumns()));
         }
         return solutionMatrix;
     }
