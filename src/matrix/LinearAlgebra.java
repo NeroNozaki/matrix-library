@@ -257,7 +257,9 @@ public class LinearAlgebra {
         // system is possible indeterminate when nullity of coefient matrix is not 0
         if (C.getColumns() - findRank(C) != 0) {
             return 1;
-        } else {
+        }
+        // else, system is determinate
+        else {
             return 2;
         }
     }
