@@ -257,7 +257,9 @@ public class LinearAlgebra {
         // system is possible indeterminate when nullity of coefient matrix is not 0
         if (C.getColumns() - findRank(C) != 0) {
             return 1;
-        } else {
+        }
+        // else, system is possible
+        else {
             return 2;
         }
     }
@@ -288,11 +290,6 @@ public class LinearAlgebra {
 
         int variables = simpMatrix.getColumns() - 1;
         double[] solution = new double[variables];
-        for(int i = 1; i <= simpMatrix.getRows() && i <= variables; i++) {
-            solution[i-1] = simpMatrix.get(i, simpMatrix.getColumns());
-        }
-        Vector result = new Vector(solution);
-        System.out.println(result);
 
         Matrix solutionMatrix = new Matrix(variables, 1);
         for (int i = 1; i <= variables; i++) {

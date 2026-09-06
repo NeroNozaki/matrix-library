@@ -14,6 +14,11 @@ public class Vector {
         this.data = new Matrix(data);
     }
 
+    public Vector(int dimension) {
+        double[][] data = new double[dimension][1];
+        this.data = new Matrix(data);
+    }
+
     // ------------------- GETTERS/SETTERS ------------------
     public double get(int index) {
         if (index <= 0) {
