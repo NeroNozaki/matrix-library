@@ -257,9 +257,7 @@ public class LinearAlgebra {
         // system is possible indeterminate when nullity of coefient matrix is not 0
         if (C.getColumns() - findRank(C) != 0) {
             return 1;
-        }
-        // else, system is possible
-        else {
+        } else {
             return 2;
         }
     }
@@ -289,13 +287,13 @@ public class LinearAlgebra {
         }
 
         int variables = simpMatrix.getColumns() - 1;
-        double[] solution = new double[variables];
-
-        Matrix solutionMatrix = new Matrix(variables, 1);
-        for (int i = 1; i <= variables; i++) {
-            solutionMatrix.set(i, 1, solution[i-1]);
+        double[][] solution = new double[variables][1];
+        for(int i = 1; i <= simpMatrix.getRows() && i <= variables; i++) {
+            solution[i-1][0] = simpMatrix.get(i, simpMatrix.getColumns());
         }
-        return solutionMatrix;
+        Matrix result = new Matrix(solution);
+
+        return result;
     }
     private double findPivot(Matrix matrix, int row) {
         for(int j = 1; j <= matrix.getColumns(); j++) {
