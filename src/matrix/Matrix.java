@@ -22,7 +22,11 @@ public class Matrix {
 
     }
     public Matrix(int rows, int columns) {
-        this.data = new double[rows][columns];
+        if (rows > 0 && columns > 0) {
+            this.data = new double[rows][columns];
+        } else {
+            throw new IllegalArgumentException("rows or columns cannot have length smaller than 1");
+        }
     }
 
     public Matrix(Matrix matrix) {

@@ -135,6 +135,7 @@ public class LinearAlgebra {
         return dot(A, B);
     }
     // unnecessary but i'm keeping them here jic
+
     private Matrix dot(Vector a, Matrix B) {
         if (a.dimension() != B.getRows()) {
             throw new InvalidParameterException("Dimension of vector and rows of matrix don't match.");
@@ -230,6 +231,7 @@ public class LinearAlgebra {
         }
     }
 
+    // ------------ helpers ---------- 
     private int findRank(Matrix matrix) {
         int rank = 0;
         for (int i = 1; i <= matrix.getRows(); i++) {
