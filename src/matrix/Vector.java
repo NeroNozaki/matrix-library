@@ -1,5 +1,4 @@
 package matrix;
-
 import java.security.InvalidParameterException;
 
 public class Vector {
@@ -16,6 +15,14 @@ public class Vector {
 
     public Vector(int dimension) {
         double[][] data = new double[dimension][1];
+        this.data = new Matrix(data);
+    }
+
+    public Vector(Vector vector) {
+        double[][] data = new double[vector.dimension()][1];
+        for (int i = 1; i <= vector.dimension(); i++) {
+            data[i-1][0] = vector.get(i);
+        }
         this.data = new Matrix(data);
     }
 

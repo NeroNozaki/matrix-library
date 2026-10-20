@@ -38,6 +38,18 @@ public class Matrix {
         }
     }
 
+    public Vector vectorize() {
+        if (this.getColumns() != 1) {
+            throw new IllegalArgumentException("can only turn column matrices into vectors.");
+        }
+
+        Vector v = new Vector(this.getRows());
+        for (int i = 1; i <= this.getRows(); i++) {
+            v.set(i, this.get(i, 1));
+        }
+        return v;
+    }
+
     // ------------ GETTERS/SETTERS -------------
 
     public double get(int row, int column) {

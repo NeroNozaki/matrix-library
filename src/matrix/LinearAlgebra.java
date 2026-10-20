@@ -1,5 +1,4 @@
 package matrix;
-
 import java.security.InvalidParameterException;
 
 public class LinearAlgebra {
@@ -122,7 +121,7 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
-    public Matrix dot(Matrix A, Vector b) {
+    public Vector dot(Matrix A, Vector b) {
         if (A.getColumns() != b.dimension()) {
             throw new InvalidParameterException("Columns of matrix and dimension of vector don't match.");
         }
@@ -132,7 +131,7 @@ public class LinearAlgebra {
             B.set(i, 1, b.get(i));
         }
         
-        return dot(A, B);
+        return dot(A, B).vectorize();
     }
     // unnecessary but i'm keeping them here jic
 
