@@ -123,7 +123,7 @@ public class LinearAlgebra {
     }
     public Vector dot(Matrix A, Vector b) {
         if (A.getColumns() != b.dimension()) {
-            throw new InvalidParameterException("Columns of matrix and dimension of vector don't match.");
+            throw new InvalidParameterException("Columns of matrix and dimension of vector don't match.\n Columns: " + A.getColumns() + ", Dimension: " + b.dimension());
         }
 
         Matrix B = new Matrix(b.dimension(), 1);

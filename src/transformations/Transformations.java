@@ -8,44 +8,111 @@ public class Transformations {
     private D2 twoD = new D2();
     private D3 threeD = new D3();
 
-    public Vector reflection2D(Vector vector, boolean reflect_x, boolean reflect_y) {
-        if (vector.dimension() != 2) {
-            throw new IllegalArgumentException("Can only handle 2-dimensional vectors");
-        }
+    // ====================== Reflection ======================
 
-        Vector v = homogenizeVector(vector, 1);
-
-        if (reflect_x) {
-            v = la.dot(twoD.reflector_x, v);
-        }
-        if (reflect_y) {
-            v = la.dot(twoD.reflector_y, v);
-        }
-
-        return dehomogenizeVector(v);
+    public Vector reflection2DX(Vector vector) {
+        return reflection2D(vector, true, false);
     }
-    public Vector reflection3D(
-        Vector vector, boolean reflect_x, boolean reflect_y, boolean reflect_z) {
-        if (vector.dimension() != 3) {
-            throw new IllegalArgumentException("Can only handle 3-dimensional vectors");
-        }
+
+    public Vector reflection2DY(Vector vector) {
+        return reflection2D(vector, false, true);
+    }
+
+    private Vector reflection2D(Vector vector, boolean reflect_x, boolean reflect_y) {
+        checkVector(vector, 2);
 
         Vector v = homogenizeVector(vector, 1);
 
         if (reflect_x) {
-            v = la.dot(threeD.reflector_x, v);
+            v = la.dot(twoD.reflectorX, v);
         }
         if (reflect_y) {
-            v = la.dot(threeD.reflector_y, v);
-        }
-        if (reflect_z) {
-            v = la.dot(threeD.reflector_z, v);
+            v = la.dot(twoD.reflectorY, v);
         }
 
         return dehomogenizeVector(v);
     }
 
-    // method to create a vector in homogenous coordinates. appending 1 at the end.
+    public Vector reflection3DX(Vector vector) {
+        return reflection3D(vector, true, false, false);
+    }
+
+    public Vector reflection3DY(Vector vector) {
+        return reflection3D(vector, false, true, false);
+    }
+
+    public Vector reflection3DZ(Vector vector) {
+        return reflection3D(vector, false, false, true);
+    }
+
+    private Vector reflection3D(Vector vector, boolean reflectX, boolean reflectY, boolean reflectZ) {
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+
+        if (reflectX) {
+            v = la.dot(threeD.reflectorX, v);
+        }
+        if (reflectY) {
+            v = la.dot(threeD.reflectorY, v);
+        }
+        if (reflectZ) {
+            v = la.dot(threeD.reflectorZ, v);
+        }
+
+        return dehomogenizeVector(v);
+    }
+
+    // ====================== Rotation ==========================
+    public Vector rotation2D(Vector vector, double angdeg) {
+        // accepts angle in degrees
+        checkVector(vector, 2);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(twoD.rotator(angdeg), v);
+        return dehomogenizeVector(v);
+    }
+
+    public Vector rotation3DX(Vector vector, double angdeg) {
+        return rotation3D(vector, angdeg, true, false, false);
+    }
+
+    public Vector rotation3DY(Vector vector, double angdeg) {
+        return rotation3D(vector, angdeg, false, true, false);
+    }
+
+    public Vector rotation3DZ(Vector vector, double angdeg) {
+        return rotation3D(vector, angdeg, false, false, true);
+    }
+
+    private Vector rotation3D(
+        Vector vector, double angdeg,
+        boolean rotate_x, boolean rotate_y, boolean rotate_z) {
+        // also accepts angle in degrees
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+
+        Matrix x, y, z;
+        x = threeD.rotatorX(angdeg);
+        y = threeD.rotatorY(angdeg);
+        z = threeD.rotatorZ(angdeg);
+
+        if (rotate_x) {
+            v = la.dot(x, v);
+        }
+        if (rotate_y) {
+            v = la.dot(y, v);
+        }
+        if (rotate_z) {
+            v = la.dot(z, v);
+        }
+
+        return dehomogenizeVector(v);
+    }
+    // ===================== Helpers ==========================
+
+    // method to create a vector in homogenous coordinates.
     private Vector homogenizeVector(Vector vector, double level) {
         Vector v = new Vector(vector.dimension()+1);
 
@@ -68,47 +135,107 @@ public class Transformations {
 
         return v;
     }
+
+    private void checkVector(Vector vector, int dim) {
+        if (vector.dimension() != dim) {
+            throw new IllegalArgumentException("Can only handle " + dim + " dimensional Vectors.");
+        }
+    }
 }
 
 class D2 {
     public D2() {}
 
-    Matrix reflector_x = new Matrix(new double[][] {
+    Matrix reflectorX = new Matrix(new double[][] {
     {1, 0, 0},
     {0, -1, 0},
     {0, 0, 1},
     });
 
-    Matrix reflector_y = new Matrix(new double[][] {
+    Matrix reflectorY = new Matrix(new double[][] {
     {-1, 0, 0},
     {0, 1, 0},
     {0, 0, 1},
     });
+
+    Matrix rotator(double angdeg) {
+        // angle in radians
+        double r = Math.toRadians(angdeg);
+        double sin = Math.sin(r);
+        double cos = Math.cos(r);
+
+        return new Matrix(new double[][] {
+        {cos, -sin, 0},
+        {sin,  cos, 0},
+        {0,    0,   1},
+        });
+    }
 
 }
 
 class D3 {
     D3() {}
 
-    Matrix reflector_x = new Matrix(new double[][] {
+    Matrix reflectorX = new Matrix(new double[][] {
     {1, 0, 0, 0},
     {0, -1, 0, 0},
     {0, 0, -1, 0},
     {0, 0, 0, 1},
     });
 
-    Matrix reflector_y = new Matrix(new double[][] {
+    Matrix reflectorY = new Matrix(new double[][] {
     {-1, 0, 0, 0},
     {0, 1, 0, 0},
     {0, 0, -1, 0},
     {0, 0, 0, 1},
     });
 
-    Matrix reflector_z = new Matrix(new double[][] {
+    Matrix reflectorZ = new Matrix(new double[][] {
     {-1, 0, 0, 0},
     {0, -1, 0, 0},
     {0, 0, 1, 0},
     {0, 0, 0, 1},
     });
 
+    Matrix rotatorX(double angdeg) {
+        double a = Math.toRadians(angdeg);
+
+        double sin = Math.sin(a);
+        double cos = Math.cos(a);
+
+        return new Matrix(new double[][] {
+        {1, 0, 0, 0},
+        {0, cos, -sin, 0},
+        {0, sin, cos, 0},
+        {0, 0, 0, 1},
+        });
+    }
+
+    Matrix rotatorY(double angdeg) {
+        double a = Math.toRadians(angdeg);
+
+        double sin = Math.sin(a);
+        double cos = Math.cos(a);
+
+        return new Matrix(new double[][] {
+        {cos, 0, sin, 0},
+        {0, 1, 0, 0},
+        {-sin, 0, cos, 0},
+        {0, 0, 0, 1},
+        });
+    }
+
+    Matrix rotatorZ(double angdeg) {
+        double a = Math.toRadians(angdeg);
+
+        double sin = Math.sin(a);
+        double cos = Math.cos(a);
+
+        return new Matrix(new double[][] {
+        {cos, -sin, 0, 0},
+        {sin, cos, 0, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 1},
+        });
+    }
 }
