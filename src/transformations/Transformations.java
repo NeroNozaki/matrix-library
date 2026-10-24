@@ -64,6 +64,7 @@ public class Transformations {
     }
 
     // ====================== Rotation ==========================
+
     public Vector rotation2D(Vector vector, double angdeg) {
         // accepts angle in degrees
         checkVector(vector, 2);
@@ -74,42 +75,32 @@ public class Transformations {
     }
 
     public Vector rotation3DX(Vector vector, double angdeg) {
-        return rotation3D(vector, angdeg, true, false, false);
-    }
-
-    public Vector rotation3DY(Vector vector, double angdeg) {
-        return rotation3D(vector, angdeg, false, true, false);
-    }
-
-    public Vector rotation3DZ(Vector vector, double angdeg) {
-        return rotation3D(vector, angdeg, false, false, true);
-    }
-
-    private Vector rotation3D(
-        Vector vector, double angdeg,
-        boolean rotate_x, boolean rotate_y, boolean rotate_z) {
-        // also accepts angle in degrees
         checkVector(vector, 3);
 
         Vector v = homogenizeVector(vector, 1);
-
-        Matrix x, y, z;
-        x = threeD.rotatorX(angdeg);
-        y = threeD.rotatorY(angdeg);
-        z = threeD.rotatorZ(angdeg);
-
-        if (rotate_x) {
-            v = la.dot(x, v);
-        }
-        if (rotate_y) {
-            v = la.dot(y, v);
-        }
-        if (rotate_z) {
-            v = la.dot(z, v);
-        }
+        v = la.dot(threeD.rotatorX(angdeg), v);
 
         return dehomogenizeVector(v);
     }
+
+    public Vector rotation3DY(Vector vector, double angdeg) {
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(threeD.rotatorY(angdeg), v);
+
+        return dehomogenizeVector(v);
+    }
+
+    public Vector rotation3DZ(Vector vector, double angdeg) {
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(threeD.rotatorZ(angdeg), v);
+
+        return dehomogenizeVector(v);
+    }
+
     // ===================== Helpers ==========================
 
     // method to create a vector in homogenous coordinates.
@@ -136,6 +127,7 @@ public class Transformations {
         return v;
     }
 
+    // check is the vector is of dim dimension. if not, throw an error
     private void checkVector(Vector vector, int dim) {
         if (vector.dimension() != dim) {
             throw new IllegalArgumentException("Can only handle " + dim + " dimensional Vectors.");
@@ -177,24 +169,24 @@ class D3 {
     D3() {}
 
     Matrix reflectorX = new Matrix(new double[][] {
-    {1, 0, 0, 0},
-    {0, -1, 0, 0},
-    {0, 0, -1, 0},
-    {0, 0, 0, 1},
+    {1,  0,  0, 0},
+    {0, -1,  0, 0},
+    {0,  0, -1, 0},
+    {0,  0,  0, 1},
     });
 
     Matrix reflectorY = new Matrix(new double[][] {
-    {-1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, -1, 0},
-    {0, 0, 0, 1},
+    {-1, 0,  0, 0},
+    { 0, 1,  0, 0},
+    { 0, 0, -1, 0},
+    { 0, 0,  0, 1},
     });
 
     Matrix reflectorZ = new Matrix(new double[][] {
-    {-1, 0, 0, 0},
-    {0, -1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1},
+    {-1,  0, 0, 0},
+    { 0, -1, 0, 0},
+    { 0,  0, 1, 0},
+    { 0,  0, 0, 1},
     });
 
     Matrix rotatorX(double angdeg) {
@@ -204,10 +196,10 @@ class D3 {
         double cos = Math.cos(a);
 
         return new Matrix(new double[][] {
-        {1, 0, 0, 0},
+        {1, 0,    0,   0},
         {0, cos, -sin, 0},
-        {0, sin, cos, 0},
-        {0, 0, 0, 1},
+        {0, sin,  cos, 0},
+        {0, 0,    0,   1},
         });
     }
 
@@ -218,10 +210,10 @@ class D3 {
         double cos = Math.cos(a);
 
         return new Matrix(new double[][] {
-        {cos, 0, sin, 0},
-        {0, 1, 0, 0},
+        {cos,  0, sin, 0},
+        {0,    1, 0,   0},
         {-sin, 0, cos, 0},
-        {0, 0, 0, 1},
+        {0,    0, 0,   1},
         });
     }
 
@@ -233,9 +225,9 @@ class D3 {
 
         return new Matrix(new double[][] {
         {cos, -sin, 0, 0},
-        {sin, cos, 0, 0},
-        {0, 0, 1, 0},
-        {0, 0, 0, 1},
+        {sin,  cos, 0, 0},
+        {0,    0,   1, 0},
+        {0,    0,   0, 1},
         });
     }
 }
