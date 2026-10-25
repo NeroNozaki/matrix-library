@@ -38,6 +38,7 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
+
     public Vector sum(Vector a, Vector b) {
         if (a.dimension() != b.dimension()) {
             throw new InvalidParameterException("Vectors must be of the same dimension.");
@@ -64,6 +65,7 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
+
     public Vector times(double scalar, Vector vector) {
         double[] values = new double[vector.dimension()];
 
@@ -73,6 +75,7 @@ public class LinearAlgebra {
 
         return new Vector(values);
     }
+
     // element by element multiplication
     public Matrix times(Matrix A, Matrix B) {
         if (A.getRows() != B.getRows() || A.getColumns() != B.getColumns()) {
@@ -89,6 +92,7 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
+
     public Vector times(Vector a, Vector b) {
         if (a.dimension() != b.dimension()) {
             throw new InvalidParameterException("Vectors must have the same dimension.");
@@ -121,6 +125,7 @@ public class LinearAlgebra {
 
         return new Matrix(values);
     }
+
     public Vector dot(Matrix A, Vector b) {
         if (A.getColumns() != b.dimension()) {
             throw new InvalidParameterException("Columns of matrix and dimension of vector don't match.\n Columns: " + A.getColumns() + ", Dimension: " + b.dimension());
@@ -130,26 +135,9 @@ public class LinearAlgebra {
         for (int i = 1; i <= b.dimension(); i++) {
             B.set(i, 1, b.get(i));
         }
-        
+
         return dot(A, B).vectorize();
     }
-    // unnecessary but i'm keeping them here jic
-
-    private Matrix dot(Vector a, Matrix B) {
-        if (a.dimension() != B.getRows()) {
-            throw new InvalidParameterException("Dimension of vector and rows of matrix don't match.");
-        }
-
-        Matrix A = new Matrix(1, a.dimension());
-        for (int i = 1; i <= a.dimension(); i++) {
-            A.set(1, i, a.get(i));
-        }
-        
-        return dot(A, B);
-    }
-    private Vector dot(Vector a, Vector b) {
-        return times(a, b);
-}
 
     // ------------- gauss ---------------
     public Matrix gauss(Matrix A) {
@@ -264,6 +252,7 @@ public class LinearAlgebra {
             return 2;
         }
     }
+
     private Matrix actuallySolve(Matrix matrix) {
         Matrix simpMatrix = simplifyPivots(matrix);
 
@@ -298,6 +287,7 @@ public class LinearAlgebra {
 
         return result;
     }
+
     private double findPivot(Matrix matrix, int row) {
         for(int j = 1; j <= matrix.getColumns(); j++) {
             if (matrix.get(row, j) != 0) {
@@ -306,6 +296,7 @@ public class LinearAlgebra {
         }
         return 0;
     }
+
     private Matrix simplifyPivots(Matrix matrix) {
         double pivot;
         for (int i = 1; i <= matrix.getRows(); i++) {
@@ -319,6 +310,7 @@ public class LinearAlgebra {
         }
         return matrix;
     }
+
     private int findPivotColumn(Matrix matrix, int row) {
         for(int j = 1; j <= matrix.getColumns(); j++) {
             if (matrix.get(row, j) != 0) {
