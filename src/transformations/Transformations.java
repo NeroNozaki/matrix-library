@@ -101,6 +101,17 @@ public class Transformations {
         return dehomogenizeVector(v);
     }
 
+    // ====================== Shearing ==========================
+
+    public Vector shearing(Vector vector, double kx, double ky) {
+        checkVector(vector, 2);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(twoD.shearer(kx, ky), v);
+
+        return dehomogenizeVector(v);
+    }
+
     // ===================== Helpers ==========================
 
     // method to create a vector in homogenous coordinates.
@@ -161,7 +172,17 @@ class D2 {
         {sin,  cos, 0},
         {0,    0,   1},
         });
+
     }
+
+        Matrix shearer(double kx, double ky) {
+        return new Matrix(new double[][] {
+        {1,  kx, 0},
+        {ky, 1,  0},
+        {0,  0,  1},
+        });
+    }
+    
 
 }
 
