@@ -5,19 +5,19 @@ public class Vector {
     private Matrix data;
     private double norm;
 
+
     public Vector(double[] elements) {
         double[][] data = new double[elements.length][1];
         for (int i = 0; i < elements.length; i++) {
             data[i][0] = elements[i];
         }
 
-        this.data = new Matrix(data);
-        this.norm = calculateNorm();
+        assignFields(data);
     }
 
     public Vector(int dimension) {
         double[][] data = new double[dimension][1];
-        this.data = new Matrix(data);
+        assignFields(data);
     }
 
     public Vector(Vector vector) {
@@ -25,7 +25,12 @@ public class Vector {
         for (int i = 1; i <= vector.dimension(); i++) {
             data[i-1][0] = vector.get(i);
         }
-        this.data = new Matrix(data);
+        assignFields(data);
+    }
+
+    private void assignFields(double[][] elements) {
+        this.data = new Matrix(elements);
+        this.norm = calculateNorm();
     }
 
     // ------------------- GETTERS/SETTERS ------------------
@@ -67,6 +72,34 @@ public class Vector {
         return scaled;
     }
 
+    public Vector sum(Vector vector) {
+        if (this.dimension() != vector.dimension()) {
+            throw new IllegalArgumentException("Can only sum vectors of the same dimension.");
+        }
+
+        Vector result = new Vector(this.dimension());
+
+        for (int i = 1; i <= this.dimension(); i++) {
+            result.set(i, this.get(i) + vector.get(i));
+        }
+
+        return result;
+    }
+
+    public Vector subtract(Vector vector) {
+        if (this.dimension() != vector.dimension()) {
+            throw new IllegalArgumentException("Can only subtract vectors of the same dimension.");
+        }
+
+        Vector result = new Vector(this.dimension());
+
+        for (int i = 1; i <= this.dimension(); i++) {
+            result.set(i, this.get(i) - vector.get(i));
+        }
+
+        return result;
+    }
+
     public double dot(Vector vector) {
         if (this.dimension() != vector.dimension()) {
             throw new IllegalArgumentException("Both vectors need to have the same dimension.");
@@ -92,6 +125,12 @@ public class Vector {
         double factor = this.dot(vector) / vector.getNorm();
 
         return this.scale(factor);
+    }
+
+    public double distanceBetween(Vector vector) {
+        Vector v = new Vector(this.subtract(this.projectOn(vector)));
+
+        return v.getNorm();
     }
 
     // --------------- Override --------------

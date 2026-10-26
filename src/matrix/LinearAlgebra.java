@@ -150,7 +150,7 @@ public class LinearAlgebra {
 
         while (pivotRow <= B.getRows() && column <= B.getColumns()) {
             swapRow = findSwapRow(B, pivotRow, column);
-            B = new Matrix(swapRows(B, swapRow, pivotRow));
+            B = B.swapRows(swapRow, pivotRow);
             pivot = B.get(pivotRow, column);
             if (Math.abs(pivot) < 0.0000000000001) {
                 column++;
@@ -160,9 +160,7 @@ public class LinearAlgebra {
 
             for (int i = pivotRow + 1; i <= B.getRows(); i++) {
                 factor = B.get(i, column) / pivot;
-                for (int j = column; j <= B.getColumns(); j++) {
-                    B.set(i, j, B.get(i, j) - (B.get(pivotRow, j) * factor));
-                }
+                B = B.addRowMultiple(i, pivotRow, -factor, column);
             }
 
             pivotRow++;
@@ -171,6 +169,7 @@ public class LinearAlgebra {
 
         return B;
     }
+
     // helpers
     private int findSwapRow(Matrix A, int pivotRow, int column) {
         int swapRow = pivotRow;
@@ -183,22 +182,6 @@ public class LinearAlgebra {
         }
         return swapRow;
     }
-    private Matrix swapRows(Matrix A, int swapRow, int targetRow) {
-        Matrix B = new Matrix(A.getRows(), A.getColumns());
-        for (int i = 1; i <= B.getRows(); i++) {
-            for (int j = 1; j <= B.getColumns(); j++) {
-                if (i == targetRow) {
-                    B.set(i, j, A.get(swapRow, j));
-                } else if (i == swapRow) {
-                    B.set(i, j, A.get(targetRow, j));
-                } else {
-                    B.set(i, j, A.get(i, j));
-                }
-            }
-        }
-        return B;
-    }
-
     // ------------ solve --------------
     public Matrix solve(Matrix matrix) {
         Matrix A = gauss(matrix);
@@ -271,9 +254,7 @@ public class LinearAlgebra {
 
             for(int i = pivotRow-1; i >= 1; i--) {
                 factor = simpMatrix.get(i, pivotColumn) / pivot;
-                for(int j = matrix.getColumns(); j >= 1; j--) {
-                    simpMatrix.set(i, j, simpMatrix.get(i, j) - (simpMatrix.get(pivotRow, j) * factor));
-                }
+                simpMatrix = simpMatrix.addRowMultiple(i, pivotRow, -factor, 1);
             }
             pivotRow--;
         }
@@ -304,9 +285,7 @@ public class LinearAlgebra {
             if (Math.abs(pivot) < 0.0000000000001) {
                 continue;
             }
-            for (int j = 1; j <= matrix.getColumns(); j++) {
-                matrix.set(i, j, matrix.get(i, j) / pivot);
-            }
+            matrix = matrix.scaleRow(i, 1 / pivot);
         }
         return matrix;
     }

@@ -21,6 +21,7 @@ public class Matrix {
         }
 
     }
+
     public Matrix(int rows, int columns) {
         if (rows > 0 && columns > 0) {
             this.data = new double[rows][columns];
@@ -38,9 +39,72 @@ public class Matrix {
         }
     }
 
+    // ------ row and column operations ------
+    public Matrix swapRows(int rowA, int rowB) {
+        Matrix M = new Matrix(this);
+        for (int j = 1; j <= M.getColumns(); j++) {
+            double value = M.get(rowA, j);
+            M.set(rowA, j, M.get(rowB, j));
+            M.set(rowB, j, value);
+        }
+        return M;
+    }
+
+    public Matrix swapColumns(int columnA, int columnB) {
+        Matrix M = new Matrix(this);
+        for (int i = 1; i <= M.getRows(); i++) {
+            double value = M.get(i, columnA);
+            M.set(i, columnA, M.get(i, columnB));
+            M.set(i, columnB, value);
+        }
+        return M;
+    }
+
+    public Matrix scaleRow(int row, double scalar) {
+        if (scalar == 0) {
+            throw new IllegalArgumentException("Scalar must be non-zero.");
+        }
+
+        Matrix M = new Matrix(this);
+        for (int j = 1; j <= M.getColumns(); j++) {
+            M.set(row, j, M.get(row, j) * scalar);
+        }
+        return M;
+    }
+
+    public Matrix scaleColumn(int column, double scalar) {
+        if (scalar == 0) {
+            throw new IllegalArgumentException("Scalar must be non-zero.");
+        }
+
+        Matrix M = new Matrix(this);
+        for (int i = 1; i <= M.getRows(); i++) {
+            M.set(i, column, M.get(i, column) * scalar);
+        }
+        return M;
+    }
+
+    public Matrix addRowMultiple(
+        int targetRow, int sourceRow, double scalar, int startColumn) {
+        Matrix M = new Matrix(this);
+        for (int j = startColumn; j <= M.getColumns(); j++) {
+            M.set(targetRow, j, M.get(targetRow, j) + M.get(sourceRow, j) * scalar);
+        }
+        return M;
+    }
+
+    public Matrix addColumnMultiple(int targetColumn, int sourceColumn, double scalar) {
+        Matrix M = new Matrix(this);
+        for (int i = 1; i <= M.getRows(); i++) {
+            M.set(i, targetColumn, M.get(i, targetColumn) + M.get(i, sourceColumn) * scalar);
+        }
+        return M;
+    }
+
+    // ------------ Turn a column matrix into a vector
     public Vector vectorize() {
         if (this.getColumns() != 1) {
-            throw new IllegalArgumentException("can only turn column matrices into vectors.");
+            throw new IllegalArgumentException("Can only turn column matrices into vectors.");
         }
 
         Vector v = new Vector(this.getRows());
