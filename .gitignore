@@ -1,7 +1,13 @@
 *
+!.gitignore
+!README.md
+!.project
+!.classpath
 !src/
 !src/Main.java
 !src/matrix/
-!src/matrix/*
+!src/matrix/*.java
 !src/transformations/
-!src/transformations/*
+!src/transformations/*.java
+!src/runtime/
+!src/runtime/*.java

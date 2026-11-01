@@ -39,6 +39,21 @@ public class Matrix {
         }
     }
 
+    public Matrix(Vector[] vectors) {
+        for (int i = 0; i < vectors.length; i++) {
+            if (vectors[0].dimension() != vectors[i].dimension()) {
+                throw new IllegalArgumentException("All vectors in the input must have the same dimension.");
+            }
+        }
+
+        double[][] data = new double[vectors.length][vectors[0].dimension()];
+        for (int i = 0; i < vectors.length; i++) {
+            data[i] = vectors[i].getItems();
+        }
+
+        this.data = data;
+    }
+
     // ------ row and column operations ------
     public Matrix swapRows(int rowA, int rowB) {
         Matrix M = new Matrix(this);
