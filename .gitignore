@@ -1,4 +1,7 @@
 *
+!src/
 !src/Main.java
 !src/matrix/
-!src/trasformations/
+!src/matrix/*
+!src/transformations/
+!src/transformations/*
