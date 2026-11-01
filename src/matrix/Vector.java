@@ -3,7 +3,6 @@ import java.security.InvalidParameterException;
 
 public class Vector {
     private Matrix data;
-    private double norm;
 
 
     public Vector(double[] elements) {
@@ -30,7 +29,6 @@ public class Vector {
 
     private void assignFields(double[][] elements) {
         this.data = new Matrix(elements);
-        this.norm = calculateNorm();
     }
 
     // ------------------- GETTERS/SETTERS ------------------
@@ -50,11 +48,9 @@ public class Vector {
 
     public int dimension() { return data.getRows(); }
 
-    public double getNorm() { return this.norm; }
-
     // ---------------- Operations ------------------
 
-    private double calculateNorm() {
+    public double getNorm() {
         double sum = 0;
         for (int i = 1; i <= this.dimension(); i++) {
             sum += Math.pow(this.get(i), 2);
@@ -118,13 +114,14 @@ public class Vector {
         }
 
         double cosine = this.dot(vector) / (this.getNorm() * vector.getNorm());
+        cosine = Math.max(-1.0, Math.min(1.0, cosine));
         return Math.acos(cosine);
     }
 
     public Vector projectOn(Vector vector) {
-        double factor = this.dot(vector) / vector.getNorm();
+        double factor = this.dot(vector) / Math.pow(vector.getNorm(), 2);
 
-        return this.scale(factor);
+        return vector.scale(factor);
     }
 
     public double distanceBetween(Vector vector) {
