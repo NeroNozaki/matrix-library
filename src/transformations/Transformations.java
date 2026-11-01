@@ -8,6 +8,26 @@ public class Transformations {
     private D2 twoD = new D2();
     private D3 threeD = new D3();
 
+    // ====================== Translation ======================
+
+    public Vector translate2D(Vector vector, double dx, double dy) {
+        checkVector(vector, 2);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(twoD.translator(dx, dy), v);
+
+        return dehomogenizeVector(v);
+    }
+
+    public Vector translate3D(Vector vector, double dx, double dy, double dz) {
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+        v = la.dot(threeD.translator(dx, dy, dz), v);
+
+        return dehomogenizeVector(v);
+    }
+
     // ====================== Reflection ======================
 
     public Vector reflection2DX(Vector vector) {
@@ -101,6 +121,61 @@ public class Transformations {
         return dehomogenizeVector(v);
     }
 
+    // ====================== Projection =======================
+
+    public Vector projection2DX(Vector vector) {
+        return projection2D(vector, true, false);
+    }
+
+    public Vector projection2DY(Vector vector) {
+        return projection2D(vector, false, true);
+    }
+
+    private Vector projection2D(Vector vector, boolean projectX, boolean projectY) {
+        checkVector(vector, 2);
+
+        Vector v = homogenizeVector(vector, 1);
+
+        if (projectX) {
+            v = la.dot(twoD.projectorX, v);
+        }
+        if (projectY) {
+            v = la.dot(twoD.projectorY, v);
+        }
+
+        return dehomogenizeVector(v);
+    }
+
+    public Vector projection3DX(Vector vector) {
+        return projection3D(vector, true, false, false);
+    }
+
+    public Vector projection3DY(Vector vector) {
+        return projection3D(vector, false, true, false);
+    }
+
+    public Vector projection3DZ(Vector vector) {
+        return projection3D(vector, false, false, true);
+    }
+
+    private Vector projection3D(Vector vector, boolean projectX, boolean projectY, boolean projectZ) {
+        checkVector(vector, 3);
+
+        Vector v = homogenizeVector(vector, 1);
+
+        if (projectX) {
+            v = la.dot(threeD.projectorX, v);
+        }
+        if (projectY) {
+            v = la.dot(threeD.projectorY, v);
+        }
+        if (projectZ) {
+            v = la.dot(threeD.projectorZ, v);
+        }
+
+        return dehomogenizeVector(v);
+    }
+
     // ====================== Shearing ==========================
 
     public Vector shearing(Vector vector, double kx, double ky) {
@@ -175,15 +250,33 @@ class D2 {
 
     }
 
-        Matrix shearer(double kx, double ky) {
+    Matrix shearer(double kx, double ky) {
         return new Matrix(new double[][] {
         {1,  kx, 0},
         {ky, 1,  0},
         {0,  0,  1},
         });
     }
-    
 
+    Matrix translator(double dx, double dy) {
+        return new Matrix(new double[][] {
+        {1, 0, dx},
+        {0, 1, dy},
+        {0, 0, 1},
+        });
+    }
+
+    Matrix projectorX = new Matrix(new double[][] {
+    {1, 0, 0},
+    {0, 0, 0},
+    {0, 0, 1},
+    });
+
+    Matrix projectorY = new Matrix(new double[][] {
+    {0, 0, 0},
+    {0, 1, 0},
+    {0, 0, 1},
+    });
 }
 
 class D3 {
@@ -208,6 +301,36 @@ class D3 {
     { 0, -1, 0, 0},
     { 0,  0, 1, 0},
     { 0,  0, 0, 1},
+    });
+
+    Matrix translator(double dx, double dy, double dz) {
+        return new Matrix(new double[][] {
+        {1, 0, 0, dx},
+        {0, 1, 0, dy},
+        {0, 0, 1, dz},
+        {0, 0, 0, 1},
+        });
+    }
+
+    Matrix projectorX = new Matrix(new double[][] {
+    {1, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 1},
+    });
+
+    Matrix projectorY = new Matrix(new double[][] {
+    {0, 0, 0, 0},
+    {0, 1, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 1},
+    });
+
+    Matrix projectorZ = new Matrix(new double[][] {
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 1, 0},
+    {0, 0, 0, 1},
     });
 
     Matrix rotatorX(double angdeg) {
