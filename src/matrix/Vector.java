@@ -48,6 +48,15 @@ public class Vector {
 
     public int dimension() { return data.getRows(); }
 
+    public double[] getItems() {
+        double[] items = new double[this.dimension()];
+        for (int i = 1; i <= this.dimension(); i++) {
+            items[i-1] = this.get(i);
+        }
+
+        return items;
+    }
+
     // ---------------- Operations ------------------
 
     public double getNorm() {

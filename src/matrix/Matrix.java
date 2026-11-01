@@ -39,6 +39,14 @@ public class Matrix {
         }
     }
 
+    public Matrix(Vector[] vectors) {
+        double[][] data = new double[vectors.length][vectors[0].dimension()];
+        for (int i = 0; i < vectors.length; i++) {
+            data[i] = vectors[i].getItems();
+        }
+        this.data = data;
+    }
+
     // ------ row and column operations ------
     public Matrix swapRows(int rowA, int rowB) {
         Matrix M = new Matrix(this);
