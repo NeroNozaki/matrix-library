@@ -203,7 +203,7 @@ public class Matrix {
     // --------------- Override ---------------
     @Override
     public String toString() {
-        DecimalFormat format = new DecimalFormat("0.00");
+        DecimalFormat format = new DecimalFormat("0.00000");
 
         String[][] formatted = new String[getRows()][getColumns()];
         int[] widths = new int[getColumns()];

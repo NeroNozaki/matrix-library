@@ -1,6 +1,6 @@
 import runtime.Menu;
 import matrix.*;
-import pagerank.PageRank;
+import pagerank.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,8 +13,11 @@ public class Main {
 
         PageRank pg = new PageRank(a);
 
-        System.out.println(pg.center);
-        System.out.println(pg.authority);
+        int it = pg.calculate();
+        System.out.println(pg.getHub());
+        System.out.println(pg.getAuthority());
+
+        System.out.println("Number of iterations = " + it);
     }
 
     public static void menu(String[] args) {
