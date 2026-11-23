@@ -117,7 +117,7 @@ public class Matrix {
     }
 
     // ------------ Turn a column matrix into a vector
-    public Vector vectorize() {
+    public Vector toVector() {
         if (this.getColumns() != 1) {
             throw new IllegalArgumentException("Can only turn column matrices into vectors.");
         }
@@ -132,27 +132,72 @@ public class Matrix {
     // ------------ GETTERS/SETTERS -------------
 
     public double get(int row, int column) {
-        if (row > getRows() || row < 1 || column > getColumns() || column < 1) {
-            throw new IllegalArgumentException("Invalid matrix position.");
-        }
-
+        checkIndexes(row, column);
         return data[row-1][column-1];
     }
-    public void set(int row, int column, double value) {
-        if (row > getRows() || row < 1 || column > getColumns() || column < 1) {
-            throw new IllegalArgumentException("Invalid matrix position.");
-        }
 
+    public void set(int row, int column, double value) {
+        checkIndexes(row, column);
         data[row-1][column-1] = value;
     }
-    public int getRows() {
-        return data.length;
+
+    public int getRows() { return data.length; }
+
+    public int getColumns() { return data[0].length; }
+
+    public boolean isSquare() { return getRows() == getColumns(); }
+
+    public Matrix getRow(int row) {
+        checkRowIndex(row);
+        return new Matrix(new double[][]{data[row]});
     }
-    public int getColumns() {
-        return data[0].length;
+
+    public Matrix getColumn(int column) {
+        checkColumnIndex(column);
+
+        double[][] col = new double[getColumns()][1];
+        for (int i = 0; i < getRows(); i++) {
+            col[i][0] = data[i][column-1];
+        }
+
+        return new Matrix(col);
     }
-    private boolean isSquare() {
-        return getRows() == getColumns();
+
+    public double getRowSum(int row) {
+        checkRowIndex(row);
+        double sum = 0;
+        for (int i = 0; i < getColumns(); i++) {
+            sum += data[row-1][i];
+        }
+        return sum;
+    }
+
+    public double getColumnSum(int column) {
+        checkColumnIndex(column);
+        double sum = 0;
+        for (int i = 0; i < getRows(); i++) {
+            sum += data[i][column-1];
+        }
+        return sum;
+    }
+
+    // --------------- Helpers -----------------
+
+    private void checkRowIndex(int row) {
+        if (row > getRows() || row <= 0) {
+            throw new IllegalArgumentException("Row position " + row + " is out of bounds.");
+        }
+    }
+
+    private void checkColumnIndex(int column) {
+        if (column > getColumns() || column <= 0) {
+            throw new IllegalArgumentException("Column position " + column + " is out of bounds.");
+        }
+    }
+
+    private void checkIndexes(int row, int column) {
+        checkRowIndex(row);
+        checkColumnIndex(column);
     }
 
     // --------------- Override ---------------

@@ -136,7 +136,7 @@ public class LinearAlgebra {
             B.set(i, 1, b.get(i));
         }
 
-        return dot(A, B).vectorize();
+        return dot(A, B).toVector();
     }
 
     // ------------- gauss ---------------

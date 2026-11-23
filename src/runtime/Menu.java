@@ -11,9 +11,9 @@ import java.util.TreeMap;
 
 /**
  * javac -d out src/matrix/*.java src/transformations/*.java src/runtime/*.java
- * java -cp out runtime.Repl
+ * java -cp out runtime.Menu
  */
-public class Repl {
+public class Menu {
 
     private static final LinearAlgebra la = new LinearAlgebra();
     private static final Transformations tf = new Transformations();

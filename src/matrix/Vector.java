@@ -57,6 +57,8 @@ public class Vector {
         return items;
     }
 
+    public Matrix toMatrix() { return new Matrix(data); }
+
     // ---------------- Operations ------------------
 
     public double getNorm() {
